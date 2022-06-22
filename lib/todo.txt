@@ -1,0 +1,11 @@
+À FAIRE POUR QUIZIUQ :
+
+* Réaliser le workflow de 19 pages (condition réelle d'une partie de 100 joueurs).
+
+* design 4 boutons
+* si bouton ok => page verte avec ouistiti qui est content + résultat
+* si bouton ko => page rouge avec ouistiti pas content
+* si victoire de la manche => page jaune avec ouistiti super content !
+
+* explorer les packages dans pub.dev + transitions/animations + flutter awesome
+* en apprendre plus sur Rive + UX/UI + Adobe After Effects (Lottie package).
