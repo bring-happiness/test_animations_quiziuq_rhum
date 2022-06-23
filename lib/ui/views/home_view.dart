@@ -1,21 +1,17 @@
-import 'dart:math';
 
 import 'package:coast/coast.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import 'package:test_animations_quiziuq_rhum/core/viewmodels/home_model.dart';
-import 'package:test_animations_quiziuq_rhum/ui/shared/globals.dart';
 import 'package:provider/provider.dart';
+import 'package:test_animations_quiziuq_rhum/widgets/winning_set_page.dart';
 
 import '../../core/viewmodels/home_model.dart';
-import '../../widgets/animated_circle.dart';
 import '../../widgets/category.dart';
 import '../../widgets/error_page.dart';
 import '../../widgets/observer_page.dart';
 import '../../widgets/players_list.dart';
 import '../../widgets/question_screen.dart';
 import '../../widgets/success_page.dart';
-import '../shared/globals.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -42,8 +38,6 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
 
   // CATEGORY PAGE
   late AnimationController categoryController;
-
-
 
   @override
   void initState() {
@@ -75,7 +69,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
           model.swapColors();
           animationController.reset();
           setState(() {
-            //reverseAnimation = false;
+            reverseAnimation = false;
           });
           model.isCompleted = true;
         } else {
@@ -122,15 +116,6 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
           curve: Curves.easeInOutQuad);
       animationController.forward();
     });
-
-    /*await Future.delayed(const Duration(seconds: 3)).then((_) {
-      final model = Provider.of<HomeModel>(context, listen: false);
-      model.status = HomeModelStatus.success;
-      pageController.animateToPage(3,
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.easeInOutQuad);
-      animationController.forward();
-    });*/
   }
 
   @override
@@ -151,8 +136,18 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     animationController.forward();
 
     await Future.delayed(const Duration(seconds: 3)).then((_) {
-      leaveSuccessPage();
+      model.status = HomeModelStatus.winSet;
+      coastController.animateTo(
+          beach: 4,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOutQuad);
+      animationController.forward();
     });
+
+    await Future.delayed(const Duration(seconds: 3)).then((_) {
+      goToCategory();
+    });
+
   }
 
   onErrorAnswer() async {
@@ -173,7 +168,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     });
   }
 
-  leaveSuccessPage() async {
+  goToCategory() async {
     final model = Provider.of<HomeModel>(context, listen: false);
     setState(() {
       reverseAnimation = true;
@@ -185,10 +180,6 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
         curve: Curves.easeInOutQuad);
     animationController.forward();
 
-    setState(() {
-      reverseAnimation = false;
-    });
-
     await Future.delayed(const Duration(seconds: 3)).then((_) {
       final model = Provider.of<HomeModel>(context, listen: false);
       model.status = HomeModelStatus.question;
@@ -198,9 +189,13 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
           curve: Curves.easeInOutQuad);
       animationController.forward();
     });
+
+    setState(() {
+      showSuccessPage = true;
+    });
   }
 
-  goToObserverPage() {
+  goToObserverPage() async {
     final model = Provider.of<HomeModel>(context, listen: false);
     model.status = HomeModelStatus.observer;
     coastController.animateTo(
@@ -208,6 +203,10 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
         duration: const Duration(milliseconds: 500),
         curve: Curves.easeInOutQuad);
     animationController.forward();
+
+    await Future.delayed(const Duration(seconds: 3)).then((_) {
+      goToCategory();
+    });
   }
 
   @override
@@ -247,7 +246,17 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
           ),
           if (showSuccessPage)
           Beach(
-            builder: (context) => SuccessPage(),
+            builder: (context) => SuccessPage(
+              animationController: animationController,
+              startAnimation: startAnimation,
+            ),
+          ),
+          if (showSuccessPage)
+          Beach(
+            builder: (context) => WinningSetPage(
+              animationController: animationController,
+              startAnimation: startAnimation,
+            ),
           ),
           Beach(
             builder: (context) => ErrorPage(
@@ -256,8 +265,15 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
             ),
           ),
           Beach(
-            builder: (context) => ObserverPage(),
+            builder: (context) => ObserverPage(
+              startAnimation: startAnimation,
+              animationController: animationController,
+              reverseAnimation: reverseAnimation,
+            ),
           ),
+          // errorAllOtherRight, winSet, ranking,
+          // winGame, otherPlayerDisconnect,
+          // winningOtherError
         ],
         //observers: [CrabController()],
       ),

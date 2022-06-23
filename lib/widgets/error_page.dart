@@ -39,6 +39,9 @@ class ErrorPage extends StatelessWidget {
           ],
         ),
       ),
+      if (animationController.isAnimating && !model.isHalfWay)
+        Container()
+      else
       SafeArea(
         child: const Center(
           child: Text(

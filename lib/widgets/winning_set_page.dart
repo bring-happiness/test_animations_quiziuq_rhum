@@ -1,4 +1,3 @@
-import 'package:coast/coast.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
@@ -7,11 +6,11 @@ import '../core/viewmodels/home_model.dart';
 import '../ui/shared/globals.dart';
 import 'animated_circle.dart';
 
-class SuccessPage extends StatelessWidget {
+class WinningSetPage extends StatelessWidget {
   final AnimationController animationController;
   final Animation<double> startAnimation;
 
-  const SuccessPage(
+  const WinningSetPage(
       {Key? key,
       required this.animationController,
       required this.startAnimation})
@@ -53,9 +52,9 @@ class SuccessPage extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Lottie.asset(
-                      'assets/lotties/success.json',
-                      width: MediaQuery.of(context).size.width * 0.4,
-                      height: MediaQuery.of(context).size.width * 0.4,
+                      'assets/lotties/trophy.json',
+                      width: MediaQuery.of(context).size.width * 0.6,
+                      height: MediaQuery.of(context).size.width * 0.6,
                       fit: BoxFit.fill,
                       repeat: false,
                     ),
